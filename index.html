@@ -1,0 +1,1121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>John Luis V. Mayor — Software/Hardware Automation Developer</title>
+<meta name="description" content="John Luis V. Mayor — Computer Engineering student building at the seam of software and hardware: computer vision, embedded automation, and IoT safety systems.">
+
+<!-- Fonts: Space Grotesk (display), Inter (body), Fira Code (data / mono) -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+  /* ============================================================
+     0. TOKENS
+     Palette: near-black blue substrate + two signal colors —
+     signal green = the hardware/electrical thread,
+     signal blue  = the software/vision thread. Their meeting
+     point is the whole point of this portfolio.
+     ============================================================ */
+  :root{
+    --bg:        #090D12;
+    --bg-soft:   #0D131A;
+    --surface:   #121922;
+    --surface-2: #17202B;
+    --border:    #212B38;
+    --border-soft: #1A222D;
+
+    --text:      #E8EEF4;
+    --text-dim:  #93A1B0;
+    --text-faint:#5D6B7A;
+
+    --signal:    #58F7A6;   /* hardware / circuit trace */
+    --signal-dim: #2B7C55;
+    --code:      #57B8FF;   /* software / vision */
+    --code-dim:  #2A5C82;
+    --warn:      #FF9E5C;   /* rare — hardware alert / credentials accent */
+    --warn-dim:  #8A5230;
+
+    --font-display: 'Space Grotesk', 'Segoe UI', sans-serif;
+    --font-body:    'Inter', 'Segoe UI', sans-serif;
+    --font-mono:    'Fira Code', 'Consolas', monospace;
+
+    --nav-h: 72px;
+    --rail-w: 64px;
+    --maxw: 1120px;
+  }
+
+  *{ box-sizing:border-box; }
+  html{ scroll-behavior:smooth; }
+  @media (prefers-reduced-motion: reduce){
+    html{ scroll-behavior:auto; }
+    *{ animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important; }
+  }
+
+  body{
+    margin:0;
+    background:
+      radial-gradient(1100px 620px at 82% -10%, rgba(87,184,255,0.10), transparent 60%),
+      radial-gradient(900px 560px at -10% 20%, rgba(88,247,166,0.07), transparent 55%),
+      var(--bg);
+    color:var(--text);
+    font-family:var(--font-body);
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+
+  h1,h2,h3,h4{ font-family:var(--font-display); margin:0; letter-spacing:-0.01em; color:var(--text); }
+  p{ margin:0; }
+  a{ color:inherit; text-decoration:none; }
+  ul{ margin:0; padding:0; list-style:none; }
+  section{ position:relative; }
+  img,svg{ display:block; max-width:100%; }
+  ::selection{ background:var(--signal); color:#04120A; }
+
+  .mono{ font-family:var(--font-mono); }
+  .icon-svg{ width:18px; height:18px; }
+  .eyebrow{
+    font-family:var(--font-mono);
+    font-size:0.78rem;
+    letter-spacing:0.12em;
+    text-transform:uppercase;
+    color:var(--signal);
+    display:flex; align-items:center; gap:10px;
+    margin-bottom:14px;
+  }
+  .eyebrow::before{
+    content:"";
+    width:18px; height:1px;
+    background:var(--signal);
+    display:inline-block;
+  }
+  .eyebrow.code{ color:var(--code); }
+  .eyebrow.code::before{ background:var(--code); }
+  .eyebrow.warn{ color:var(--warn); }
+  .eyebrow.warn::before{ background:var(--warn); }
+
+  .container{
+    max-width:var(--maxw);
+    margin:0 auto;
+    padding:0 28px;
+  }
+
+  /* Focus visibility */
+  a:focus-visible, button:focus-visible{
+    outline:2px solid var(--code);
+    outline-offset:3px;
+    border-radius:4px;
+  }
+
+  /* ============================================================
+     1. SIGNATURE ELEMENT — the trace rail
+     A vertical PCB-style trace runs alongside the content on
+     desktop. It fills with the page's scroll progress and lights
+     a node when its section is active — the literal circuit that
+     "bridges" one section of the page to the next.
+     ============================================================ */
+  .trace-rail{
+    position:fixed;
+    left:26px;
+    top:0;
+    bottom:0;
+    width:var(--rail-w);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    z-index:40;
+    pointer-events:none;
+  }
+  .trace-track{
+    position:relative;
+    width:2px;
+    height:min(62vh, 500px);
+    background:linear-gradient(var(--border-soft), var(--border-soft));
+    border-radius:2px;
+  }
+  .trace-fill{
+    position:absolute;
+    left:0; top:0;
+    width:100%;
+    height:0%;
+    background:linear-gradient(var(--code), var(--signal));
+    border-radius:2px;
+    box-shadow:0 0 10px rgba(88,247,166,0.5);
+    transition:height 0.1s linear;
+  }
+  .trace-node{
+    position:absolute;
+    left:50%;
+    transform:translate(-50%,-50%);
+    width:11px; height:11px;
+    border-radius:50%;
+    background:var(--bg);
+    border:2px solid var(--border);
+    transition:all 0.35s ease;
+    pointer-events:auto;
+  }
+  .trace-node .label{
+    position:absolute;
+    left:20px; top:50%;
+    transform:translateY(-50%);
+    font-family:var(--font-mono);
+    font-size:0.7rem;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    color:var(--text-faint);
+    white-space:nowrap;
+    opacity:0;
+    transition:opacity 0.25s ease, transform 0.25s ease;
+  }
+  .trace-node:hover .label{ opacity:1; transform:translateY(-50%) translateX(3px); }
+  .trace-node.active{
+    border-color:var(--signal);
+    background:var(--signal);
+    box-shadow:0 0 0 4px rgba(88,247,166,0.15), 0 0 14px rgba(88,247,166,0.7);
+  }
+  .trace-node.active .label{ opacity:1; color:var(--signal); }
+  .trace-node.passed{ border-color:var(--code); background:var(--code-dim); }
+
+  @media (max-width:1100px){ .trace-rail{ display:none; } }
+
+  /* Mobile equivalent: a thin progress trace glued under the nav */
+  .scroll-progress{
+    position:fixed; top:var(--nav-h); left:0; height:2px; width:0%;
+    background:linear-gradient(90deg, var(--code), var(--signal));
+    z-index:60; transition:width 0.1s linear;
+  }
+  @media (min-width:1101px){ .scroll-progress{ display:none; } }
+
+  /* ============================================================
+     2. NAV
+     ============================================================ */
+  .nav{
+    position:fixed; top:0; left:0; right:0;
+    height:var(--nav-h);
+    z-index:50;
+    display:flex; align-items:center;
+    background:rgba(9,13,18,0.72);
+    backdrop-filter:blur(14px);
+    -webkit-backdrop-filter:blur(14px);
+    border-bottom:1px solid var(--border-soft);
+  }
+  .nav-inner{
+    width:100%;
+    max-width:var(--maxw);
+    margin:0 auto;
+    padding:0 28px;
+    display:flex; align-items:center; justify-content:space-between;
+    gap:16px;
+  }
+  .brand{
+    display:flex; align-items:center; gap:10px;
+    font-family:var(--font-display); font-weight:700; font-size:1.02rem;
+    white-space:nowrap;
+  }
+  .brand-mark{
+    width:30px; height:30px;
+    border:1px solid var(--border);
+    border-radius:8px;
+    display:flex; align-items:center; justify-content:center;
+    background:var(--surface);
+    position:relative;
+    flex-shrink:0;
+  }
+  .brand-mark::after{
+    content:"";
+    width:8px; height:8px;
+    border-radius:50%;
+    background:var(--signal);
+    box-shadow:0 0 8px var(--signal);
+  }
+  .nav-links{ display:flex; gap:2px; align-items:center; }
+  .nav-links a{
+    font-family:var(--font-mono);
+    font-size:0.8rem;
+    color:var(--text-dim);
+    padding:9px 14px;
+    border-radius:7px;
+    transition:color 0.2s ease, background 0.2s ease;
+    position:relative;
+    white-space:nowrap;
+  }
+  .nav-links a::before{ content:"//"; color:var(--text-faint); margin-right:6px; opacity:0; transition:opacity 0.2s ease; }
+  .nav-links a:hover, .nav-links a.active{ color:var(--text); background:var(--surface); }
+  .nav-links a.active::before{ opacity:1; color:var(--signal); }
+
+  .nav-cta{
+    font-family:var(--font-mono);
+    font-size:0.78rem;
+    padding:9px 15px;
+    border:1px solid var(--signal-dim);
+    border-radius:7px;
+    color:var(--signal);
+    transition:background 0.2s ease, color 0.2s ease;
+    white-space:nowrap;
+  }
+  .nav-cta:hover{ background:var(--signal); color:#04120A; }
+
+  .menu-btn{
+    display:none;
+    width:38px; height:38px;
+    border-radius:8px;
+    border:1px solid var(--border);
+    background:var(--surface);
+    align-items:center; justify-content:center;
+    color:var(--text);
+    cursor:pointer;
+    flex-shrink:0;
+  }
+
+  @media (max-width:960px){
+    .nav-links, .nav-cta{ display:none; }
+    .menu-btn{ display:flex; }
+  }
+
+  .mobile-menu{
+    position:fixed; top:var(--nav-h); left:0; right:0;
+    background:var(--bg-soft);
+    border-bottom:1px solid var(--border);
+    display:flex; flex-direction:column;
+    padding:10px 28px 22px;
+    gap:2px;
+    transform:translateY(-8px);
+    opacity:0;
+    pointer-events:none;
+    transition:all 0.22s ease;
+    z-index:49;
+  }
+  .mobile-menu.open{ transform:translateY(0); opacity:1; pointer-events:auto; }
+  .mobile-menu a{
+    font-family:var(--font-mono);
+    padding:14px 4px;
+    border-bottom:1px solid var(--border-soft);
+    color:var(--text-dim);
+    font-size:0.92rem;
+  }
+  .mobile-menu a:last-child{ border-bottom:none; }
+
+  /* ============================================================
+     3. HERO
+     ============================================================ */
+  .hero{
+    padding:calc(var(--nav-h) + 96px) 0 90px;
+    min-height:92vh;
+    display:flex; align-items:center;
+  }
+  .hero-inner{ max-width:780px; }
+  .hero-term{
+    font-family:var(--font-mono);
+    font-size:0.82rem;
+    color:var(--text-dim);
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:8px;
+    padding:10px 14px;
+    display:inline-flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:28px;
+    max-width:100%;
+  }
+  .hero-term .dot{ width:6px; height:6px; border-radius:50%; background:var(--signal); box-shadow:0 0 6px var(--signal); flex-shrink:0; }
+  .hero-term .caret{ display:inline-block; width:7px; height:14px; background:var(--code); margin-left:2px; animation:blink 1s steps(1) infinite; flex-shrink:0; }
+  @keyframes blink{ 50%{ opacity:0; } }
+
+  .hero h1{
+    font-size:clamp(2.2rem, 5vw, 3.5rem);
+    font-weight:700;
+    line-height:1.08;
+  }
+  .hero h1 .accent{
+    background:linear-gradient(90deg, var(--signal), var(--code));
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+  }
+  .hero .role{
+    font-family:var(--font-mono);
+    color:var(--code);
+    font-size:1rem;
+    margin-top:16px;
+  }
+  .hero p.lede{
+    margin-top:22px;
+    font-size:1.08rem;
+    color:var(--text-dim);
+    max-width:600px;
+  }
+  .hero-actions{ display:flex; gap:14px; margin-top:36px; flex-wrap:wrap; }
+  .btn{
+    font-family:var(--font-mono);
+    font-size:0.85rem;
+    padding:13px 22px;
+    border-radius:8px;
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    transition:transform 0.18s ease, background 0.18s ease, border-color 0.18s ease;
+  }
+  .btn-primary{ background:var(--signal); color:#04120A; border:1px solid var(--signal); }
+  .btn-primary:hover{ transform:translateY(-2px); }
+  .btn-ghost{ border:1px solid var(--border); color:var(--text); }
+  .btn-ghost:hover{ border-color:var(--code); color:var(--code); transform:translateY(-2px); }
+
+  /* ============================================================
+     4. SECTION SHARED
+     ============================================================ */
+  .section{ padding:110px 0; border-top:1px solid var(--border-soft); }
+  .section-head{ max-width:640px; margin-bottom:56px; }
+  .section-head h2{ font-size:clamp(1.8rem, 3.4vw, 2.4rem); }
+  .section-head p{ color:var(--text-dim); margin-top:14px; font-size:1.02rem; }
+
+  /* reveal on scroll */
+  .reveal{ opacity:0; transform:translateY(22px); transition:opacity 0.6s ease, transform 0.6s ease; }
+  .reveal.in{ opacity:1; transform:translateY(0); }
+
+  /* ============================================================
+     5. ABOUT
+     ============================================================ */
+  .about-grid{
+    display:grid;
+    grid-template-columns:1.3fr 1fr;
+    gap:56px;
+    align-items:start;
+  }
+  .about-text p{ color:var(--text-dim); font-size:1.05rem; }
+  .about-text p + p{ margin-top:16px; }
+  .about-text strong{ color:var(--text); font-weight:600; }
+
+  .about-panel{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:26px;
+    font-family:var(--font-mono);
+    font-size:0.85rem;
+  }
+  .about-panel .row{
+    display:flex; justify-content:space-between;
+    padding:11px 0;
+    border-bottom:1px solid var(--border-soft);
+    color:var(--text-dim);
+    gap:12px;
+  }
+  .about-panel .row:last-child{ border-bottom:none; }
+  .about-panel .row span:first-child{ flex-shrink:0; }
+  .about-panel .row span:last-child{ color:var(--text); text-align:right; }
+
+  @media (max-width:800px){
+    .about-grid{ grid-template-columns:1fr; }
+  }
+
+  /* ============================================================
+     6. PROJECTS — case study cards
+     ============================================================ */
+  .project-list{ display:flex; flex-direction:column; gap:22px; }
+  .project{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:16px;
+    padding:36px;
+    display:grid;
+    grid-template-columns:auto 1fr;
+    gap:32px;
+    transition:border-color 0.25s ease, transform 0.25s ease, background 0.25s ease;
+  }
+  .project:hover{ border-color:var(--border); background:var(--surface-2); transform:translateY(-3px); }
+
+  .project-index{
+    font-family:var(--font-mono);
+    font-size:0.78rem;
+    color:var(--text-faint);
+    display:flex; flex-direction:column; align-items:center; gap:10px;
+    padding-top:4px;
+  }
+  .project-index .ln{ width:1px; flex:1; background:var(--border); min-height:40px; }
+
+  .project-body h3{ font-size:1.35rem; }
+  .project-domain{
+    font-family:var(--font-mono);
+    font-size:0.72rem;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    padding:4px 10px;
+    border-radius:20px;
+    display:inline-block;
+    margin-bottom:12px;
+  }
+  .project-domain.hw{ color:var(--signal); background:rgba(88,247,166,0.1); border:1px solid var(--signal-dim); }
+  .project-domain.sw{ color:var(--code); background:rgba(87,184,255,0.1); border:1px solid var(--code-dim); }
+
+  .case-grid{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:20px;
+    margin-top:20px;
+  }
+  .case-block h4{
+    font-family:var(--font-mono);
+    font-size:0.72rem;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    color:var(--text-faint);
+    margin-bottom:8px;
+  }
+  .case-block p{ color:var(--text-dim); font-size:0.92rem; }
+
+  .tag-row{ display:flex; flex-wrap:wrap; gap:8px; margin-top:22px; }
+  .tag{
+    font-family:var(--font-mono);
+    font-size:0.75rem;
+    color:var(--text-dim);
+    border:1px solid var(--border);
+    padding:5px 11px;
+    border-radius:6px;
+  }
+
+  .project-desc{ color:var(--text-dim); margin-top:10px; }
+
+  @media (max-width:760px){
+    .project{ grid-template-columns:1fr; padding:26px; }
+    .project-index{ flex-direction:row; }
+    .project-index .ln{ display:none; }
+    .case-grid{ grid-template-columns:1fr; }
+  }
+
+  /* ============================================================
+     7. STACK
+     ============================================================ */
+  .stack-grid{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:22px;
+  }
+  .stack-card{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:14px;
+    padding:28px;
+  }
+  .stack-card .icon{
+    width:38px; height:38px;
+    border-radius:9px;
+    background:var(--surface-2);
+    border:1px solid var(--border);
+    display:flex; align-items:center; justify-content:center;
+    margin-bottom:18px;
+    color:var(--signal);
+  }
+  .stack-card:nth-child(2) .icon{ color:var(--code); }
+  .stack-card:nth-child(3) .icon{ color:var(--warn); }
+  .stack-card h3{ font-size:1.05rem; margin-bottom:14px; }
+  .chip-row{ display:flex; flex-wrap:wrap; gap:8px; }
+  .chip{
+    font-family:var(--font-mono);
+    font-size:0.8rem;
+    color:var(--text-dim);
+    background:var(--bg-soft);
+    border:1px solid var(--border-soft);
+    padding:6px 12px;
+    border-radius:6px;
+  }
+
+  @media (max-width:760px){ .stack-grid{ grid-template-columns:1fr; } }
+
+  /* ============================================================
+     8. CREDENTIALS — education, certs, leadership, workshops
+     ============================================================ */
+  .credentials-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(260px, 1fr));
+    gap:22px;
+  }
+  .credential-card{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:14px;
+    padding:28px;
+    display:flex;
+    flex-direction:column;
+    gap:16px;
+    transition:border-color 0.25s ease, transform 0.25s ease;
+  }
+  .credential-card:hover{ transform:translateY(-3px); border-color:var(--warn-dim); }
+  .credential-card .icon{
+    width:42px; height:42px;
+    border-radius:10px;
+    background:var(--surface-2);
+    border:1px solid var(--border);
+    display:flex; align-items:center; justify-content:center;
+    color:var(--warn);
+    flex-shrink:0;
+  }
+  .credential-card.tone-signal .icon{ color:var(--signal); }
+  .credential-card.tone-code .icon{ color:var(--code); }
+
+  .credential-kicker{
+    font-family:var(--font-mono);
+    font-size:0.68rem;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    color:var(--text-faint);
+  }
+  .credential-card h3{ font-size:1.05rem; margin-top:2px; }
+  .credential-org{
+    font-family:var(--font-mono);
+    font-size:0.82rem;
+    color:var(--text-dim);
+    margin-top:2px;
+  }
+  .credential-card p.desc{ color:var(--text-dim); font-size:0.92rem; margin-top:2px; }
+
+  @media (max-width:600px){
+    .credentials-grid{ grid-template-columns:1fr; }
+  }
+
+  /* ============================================================
+     9. CONTACT
+     ============================================================ */
+  .contact-panel{
+    background:linear-gradient(135deg, rgba(88,247,166,0.06), rgba(87,184,255,0.06));
+    border:1px solid var(--border);
+    border-radius:18px;
+    padding:56px;
+    text-align:center;
+  }
+  .contact-panel h2{ font-size:clamp(1.7rem, 4vw, 2.4rem); }
+  .contact-panel p{ color:var(--text-dim); margin-top:14px; max-width:480px; margin-left:auto; margin-right:auto; }
+  .contact-links{ display:flex; justify-content:center; gap:14px; margin-top:34px; flex-wrap:wrap; }
+  .contact-link{
+    display:flex; align-items:center; gap:9px;
+    border:1px solid var(--border);
+    padding:12px 20px;
+    border-radius:9px;
+    font-family:var(--font-mono);
+    font-size:0.85rem;
+    background:var(--surface);
+    transition:border-color 0.2s ease, transform 0.2s ease;
+  }
+  .contact-link:hover{ border-color:var(--signal); color:var(--signal); transform:translateY(-2px); }
+
+  footer{
+    padding:34px 0 50px;
+    text-align:center;
+    font-family:var(--font-mono);
+    font-size:0.78rem;
+    color:var(--text-faint);
+  }
+
+  @media (max-width:600px){
+    .contact-panel{ padding:34px 22px; }
+    .hero{ padding-top:calc(var(--nav-h) + 60px); }
+    .section{ padding:76px 0; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Signature: circuit trace rail (desktop) -->
+<div class="trace-rail" aria-hidden="true">
+  <div class="trace-track">
+    <div class="trace-fill" id="traceFill"></div>
+    <div class="trace-node" data-node="home"        style="top:0%;"><span class="label">home</span></div>
+    <div class="trace-node" data-node="about"       style="top:20%;"><span class="label">about</span></div>
+    <div class="trace-node" data-node="projects"    style="top:40%;"><span class="label">projects</span></div>
+    <div class="trace-node" data-node="stack"       style="top:60%;"><span class="label">stack</span></div>
+    <div class="trace-node" data-node="credentials" style="top:80%;"><span class="label">credentials</span></div>
+    <div class="trace-node" data-node="contact"     style="top:100%;"><span class="label">contact</span></div>
+  </div>
+</div>
+
+<!-- Mobile scroll progress -->
+<div class="scroll-progress" id="scrollProgress"></div>
+
+<!-- NAV -->
+<header class="nav">
+  <div class="nav-inner">
+    <a href="#home" class="brand"><span class="brand-mark"></span> John Luis V. Mayor</a>
+    <nav class="nav-links" id="navLinks">
+      <a href="#about">About</a>
+      <a href="#projects">Projects</a>
+      <a href="#stack">Stack</a>
+      <a href="#credentials">Credentials</a>
+      <a href="#contact">Contact</a>
+    </nav>
+    <a href="#contact" class="nav-cta">Get in touch</a>
+    <button class="menu-btn" id="menuBtn" aria-label="Toggle menu" aria-expanded="false">
+      <svg id="menuIcon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+  </div>
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="#about">About</a>
+    <a href="#projects">Projects</a>
+    <a href="#stack">Stack</a>
+    <a href="#credentials">Credentials</a>
+    <a href="#contact">Contact</a>
+  </div>
+</header>
+
+<main>
+
+  <!-- HERO -->
+  <section id="home" class="hero">
+    <div class="container hero-inner">
+      <div class="hero-term mono">
+        <span class="dot"></span>
+        <span id="typedLine">initializing bridge: hardware ⇄ software</span><span class="caret"></span>
+      </div>
+      <h1>John Luis V. Mayor — building where <span class="accent">circuits meet code</span>.</h1>
+      <p class="role">// Computer Engineering Student · Software/Hardware Automation Developer</p>
+      <p class="lede">I specialize in bridging the physical and digital worlds — using Python for object-oriented systems and computer vision, and embedded C++ for microcontrollers and IoT automation.</p>
+      <div class="hero-actions">
+        <a href="#projects" class="btn btn-primary">View case studies</a>
+        <a href="#contact" class="btn btn-ghost">Contact me</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about" class="section">
+    <div class="container">
+      <div class="about-grid">
+        <div class="reveal">
+          <div class="eyebrow">01 / About</div>
+          <h2>Two disciplines, one feedback loop.</h2>
+          <div class="about-text" style="margin-top:22px;">
+            <p>I specialize in bridging the physical and digital worlds using <strong>Python</strong> for object-oriented systems and computer vision, and <strong>embedded C++</strong> for microcontrollers and IoT automation.</p>
+            <p>In practice that means a project rarely stops at a script or a schematic — a gesture recognized by a camera becomes a cursor movement; a gas sensor's voltage swing becomes an LCD warning and a fan spinning up. I'm most interested in the handoff points, where a sensor reading has to become a decision, and a decision has to become a physical action.</p>
+          </div>
+        </div>
+        <div class="about-panel reveal">
+          <div class="row"><span>name</span><span>J. L. V. Mayor</span></div>
+          <div class="row"><span>role</span><span>CpE Student</span></div>
+          <div class="row"><span>focus</span><span>Automation · CV · Embedded</span></div>
+          <div class="row"><span>core_lang</span><span>Python, C/C++</span></div>
+          <div class="row"><span>domain</span><span>OOP Systems · MCU I/O</span></div>
+          <div class="row"><span>status</span><span style="color:var(--signal);">open to opportunities</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROJECTS -->
+  <section id="projects" class="section">
+    <div class="container">
+      <div class="section-head reveal">
+        <div class="eyebrow">02 / Projects</div>
+        <h2>Case studies</h2>
+        <p>Four projects spanning the same loop from a different angle each time: sense something in the physical world, decide, then act — in software, in hardware, or both.</p>
+      </div>
+
+      <div class="project-list">
+
+        <!-- Project 1 -->
+        <article class="project reveal">
+          <div class="project-index"><span>01</span><span class="ln"></span></div>
+          <div class="project-body">
+            <span class="project-domain sw">Computer Vision</span>
+            <h3>Computer Vision Virtual Controller</h3>
+            <p class="project-desc">A real-time hand-tracking interface that lets a webcam replace a mouse — built for touchless control without any extra hardware.</p>
+            <div class="case-grid">
+              <div class="case-block">
+                <h4>Problem</h4>
+                <p>Physical input devices break down the moment hands are occupied, dirty, or out of reach — a webcam is already there and unused.</p>
+              </div>
+              <div class="case-block">
+                <h4>Approach</h4>
+                <p>MediaPipe tracks 21 hand landmarks per frame; OpenCV handles the video pipeline; landmark positions are mapped to screen coordinates and smoothed to cut jitter before PyAutoGUI drives the OS cursor.</p>
+              </div>
+              <div class="case-block">
+                <h4>Result</h4>
+                <p>A working touchless controller with pinch-to-click gesture recognition, running in real time on consumer webcam hardware.</p>
+              </div>
+            </div>
+            <div class="tag-row">
+              <span class="tag">Python</span><span class="tag">OpenCV</span><span class="tag">MediaPipe</span><span class="tag">PyAutoGUI</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- Project 2 -->
+        <article class="project reveal">
+          <div class="project-index"><span>02</span><span class="ln"></span></div>
+          <div class="project-body">
+            <span class="project-domain hw">Embedded Safety</span>
+            <h3>Automated Gas Detection &amp; Mitigation</h3>
+            <p class="project-desc">A standalone safety system that detects hazardous gas concentration and responds without waiting on a human — or a network connection.</p>
+            <div class="case-grid">
+              <div class="case-block">
+                <h4>Problem</h4>
+                <p>Gas leaks need a response measured in seconds, not in however long it takes someone to notice and react.</p>
+              </div>
+              <div class="case-block">
+                <h4>Approach</h4>
+                <p>An MQ-135 sensor's digital alert output is wired directly into Arduino digital pin 2, so a threshold breach is read the instant it happens. The firmware then writes a status update to an LCD and switches on a DC fan to ventilate the space.</p>
+              </div>
+              <div class="case-block">
+                <h4>Result</h4>
+                <p>A closed-loop detect-and-mitigate cycle that runs entirely on the microcontroller — no cloud, no app, no dependency to fail.</p>
+              </div>
+            </div>
+            <div class="tag-row">
+              <span class="tag">Arduino</span><span class="tag">Embedded C++</span><span class="tag">MQ-135</span><span class="tag">LCD</span><span class="tag">Circuit Design</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- Project 3 -->
+        <article class="project reveal">
+          <div class="project-index"><span>03</span><span class="ln"></span></div>
+          <div class="project-body">
+            <span class="project-domain sw">Software Architecture</span>
+            <h3>MathEngine CLI</h3>
+            <p class="project-desc">A command-line file processor built to prove out a clean OOP architecture for data work, not just to get one answer out of one file.</p>
+            <div class="case-grid">
+              <div class="case-block">
+                <h4>Problem</h4>
+                <p>Ad-hoc scripts for reading, computing, and logging data get tangled fast and don't survive a second use case.</p>
+              </div>
+              <div class="case-block">
+                <h4>Approach</h4>
+                <p>Object-oriented design separates file reading, math computation, and logging into independent classes behind a single CLI entry point, so any one piece can change without touching the others.</p>
+              </div>
+              <div class="case-block">
+                <h4>Result</h4>
+                <p>A reusable processor where swapping a data source or an output format is a one-class change, not a rewrite.</p>
+              </div>
+            </div>
+            <div class="tag-row">
+              <span class="tag">Python</span><span class="tag">OOP</span><span class="tag">CLI</span><span class="tag">Pandas</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- Project 4 -->
+        <article class="project reveal">
+          <div class="project-index"><span>04</span></div>
+          <div class="project-body">
+            <span class="project-domain hw">Hardware Security</span>
+            <h3>Embedded Hardware Security Lab</h3>
+            <p class="project-desc">An ongoing exploration of firmware and hardware-level security — the layer below the app, where most security guidance stops applying.</p>
+            <div class="case-grid">
+              <div class="case-block">
+                <h4>Problem</h4>
+                <p>Embedded devices trust their communication protocols and firmware by default, which is exactly where they're least tested.</p>
+              </div>
+              <div class="case-block">
+                <h4>Approach</h4>
+                <p>Hands-on testing of hardware communication protocols and firmware behavior to understand how embedded systems fail — and where they should be hardened.</p>
+              </div>
+              <div class="case-block">
+                <h4>Result</h4>
+                <p>A growing set of protocol notes and firmware test cases that now inform how I design every other embedded project on this page.</p>
+              </div>
+            </div>
+            <div class="tag-row">
+              <span class="tag">Embedded C</span><span class="tag">Firmware</span><span class="tag">Protocols</span><span class="tag">Hardware Security</span>
+            </div>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- STACK -->
+  <section id="stack" class="section">
+    <div class="container">
+      <div class="section-head reveal">
+        <div class="eyebrow code">03 / Stack</div>
+        <h2>Tools I build with</h2>
+        <p>Grouped by which side of the bridge they live on.</p>
+      </div>
+      <div class="stack-grid">
+        <div class="stack-card reveal">
+          <div class="icon">
+            <!-- lucide: code-2 -->
+            <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 16 4-4-4-4"/><path d="m6 8-4 4 4 4"/><path d="m14.5 4-5 16"/></svg>
+          </div>
+          <h3>Languages</h3>
+          <div class="chip-row">
+            <span class="chip">Python</span><span class="chip">C / C++</span><span class="chip">HTML/CSS/JS</span><span class="chip">SQL</span>
+          </div>
+        </div>
+        <div class="stack-card reveal">
+          <div class="icon">
+            <!-- lucide: layers -->
+            <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83z"/><path d="m22 12.18-8.58 3.9a2 2 0 0 1-1.66 0L3.18 12.18"/><path d="m22 17.18-8.58 3.9a2 2 0 0 1-1.66 0l-8.58-3.9"/></svg>
+          </div>
+          <h3>Frameworks &amp; Libraries</h3>
+          <div class="chip-row">
+            <span class="chip">OpenCV</span><span class="chip">MediaPipe</span><span class="chip">Pandas</span><span class="chip">PyAutoGUI</span>
+          </div>
+        </div>
+        <div class="stack-card reveal">
+          <div class="icon">
+            <!-- lucide: cpu -->
+            <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><path d="M15 2v2M9 2v2M15 20v2M9 20v2M20 15h2M20 9h2M2 15h2M2 9h2"/></svg>
+          </div>
+          <h3>Hardware</h3>
+          <div class="chip-row">
+            <span class="chip">Arduino</span><span class="chip">MQ-135</span><span class="chip">Embedded C</span><span class="chip">Circuit Design</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CREDENTIALS -->
+  <section id="credentials" class="section">
+    <div class="container">
+      <div class="section-head reveal">
+        <div class="eyebrow warn">04 / Credentials</div>
+        <h2>Education, certifications &amp; community</h2>
+        <p>Formal coursework, verified credentials, and the workshops and communities I show up for outside of class.</p>
+      </div>
+
+      <div class="credentials-grid">
+
+        <!-- Education -->
+        <div class="credential-card tone-signal reveal">
+          <div class="icon">
+            <!-- lucide: graduation-cap -->
+            <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="22" height="22"><path d="M21.42 10.92a1 1 0 0 0-.02-1.84L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.83l8.57 3.91a2 2 0 0 0 1.66 0z"/><path d="M22 10.6V16"/><path d="M6.5 12.5V17c0 2.2 2.46 4 5.5 4s5.5-1.8 5.5-4v-4.5"/></svg>
+          </div>
+          <div>
+            <div class="credential-kicker">Education</div>
+            <h3>B.S. Computer Engineering</h3>
+            <div class="credential-org">Polytechnic University of the Philippines</div>
+          </div>
+          <p class="desc">Coursework focused on hardware-software integration, object-oriented programming, and embedded systems.</p>
+        </div>
+
+        <!-- Certification: ISC2 -->
+        <div class="credential-card reveal">
+          <div class="icon">
+            <!-- lucide: shield-check -->
+            <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="22" height="22"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg>
+          </div>
+          <div>
+            <div class="credential-kicker">Certification</div>
+            <h3>ISC2 Candidate</h3>
+            <div class="credential-org">ISC2</div>
+          </div>
+          <p class="desc">A verified digital credential demonstrating foundational knowledge in cybersecurity and system defense.</p>
+        </div>
+
+        <!-- Certification: Cisco -->
+        <div class="credential-card reveal">
+          <div class="icon">
+            <!-- lucide: shield-check -->
+            <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="22" height="22"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg>
+          </div>
+          <div>
+            <div class="credential-kicker">Certification</div>
+            <h3>Python Essentials 1 &amp; 2</h3>
+            <div class="credential-org">Cisco Networking Academy</div>
+          </div>
+          <p class="desc">Validates comprehensive proficiency in Python, from fundamental programming concepts to advanced data structures and object-oriented programming.</p>
+        </div>
+
+        <!-- Leadership -->
+        <div class="credential-card tone-code reveal">
+          <div class="icon">
+            <!-- lucide: users -->
+            <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="22" height="22"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          </div>
+          <div>
+            <div class="credential-kicker">Leadership &amp; Community</div>
+            <h3>Red Senior</h3>
+            <div class="credential-org">Google Developer Groups (GDG) on Campus — PUP</div>
+          </div>
+          <p class="desc">Helping lead and organize a student developer community focused on hands-on technical learning.</p>
+        </div>
+
+        <!-- Workshop -->
+        <div class="credential-card tone-signal reveal">
+          <div class="icon">
+            <!-- lucide: radio -->
+            <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="22" height="22"><circle cx="12" cy="12" r="2"/><path d="M4.93 19.07a10 10 0 0 1 0-14.14M7.76 16.24a6 6 0 0 1 0-8.49M16.24 7.76a6 6 0 0 1 0 8.49M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
+          </div>
+          <div>
+            <div class="credential-kicker">Hands-On Workshop</div>
+            <h3>DIY Flipper Zero Hardware Workshop</h3>
+          </div>
+          <p class="desc">Secured a seat and participated in an in-person technical session on embedded device hacking, sub-GHz transmission, and hardware diagnostics.</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact" class="section">
+    <div class="container">
+      <div class="contact-panel reveal">
+        <div class="eyebrow" style="justify-content:center;">05 / Contact</div>
+        <h2>Let's build something that closes the loop.</h2>
+        <p>Open to internships, collaborations, and conversations about automation, computer vision, or embedded systems.</p>
+        <div class="contact-links">
+          <a class="contact-link" href="mailto:johnmayor535@gmail.com">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v16H4z"/><path d="m22 6-10 7L2 6"/></svg>
+            johnluis.mayor@example.com
+          </a>
+          <a class="contact-link" href="https://github.com/John-Luis" target="_blank" rel="noopener">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+            github.com/John-Luis
+          </a>
+          <a class="contact-link" href="https://linkedin.com/in/johnluismayor" target="_blank" rel="noopener">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+            linkedin.com/in/johnluismayor
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="container mono">© <span id="year"></span> John Luis V. Mayor — built with HTML, CSS &amp; JS, no frameworks.</div>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  /* ---------- Mobile menu ---------- */
+  var menuBtn = document.getElementById('menuBtn');
+  var mobileMenu = document.getElementById('mobileMenu');
+  var menuIcon = document.getElementById('menuIcon');
+
+  function closeMenu(){
+    mobileMenu.classList.remove('open');
+    menuBtn.setAttribute('aria-expanded', 'false');
+    menuIcon.innerHTML = '<line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>';
+  }
+  menuBtn.addEventListener('click', function(){
+    var open = mobileMenu.classList.toggle('open');
+    menuBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    menuIcon.innerHTML = open
+      ? '<line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>'
+      : '<line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>';
+  });
+  mobileMenu.querySelectorAll('a').forEach(function(a){
+    a.addEventListener('click', closeMenu);
+  });
+
+  /* ---------- Smooth scroll with nav offset ---------- */
+  var navH = document.querySelector('.nav').offsetHeight;
+  document.querySelectorAll('a[href^="#"]').forEach(function(link){
+    link.addEventListener('click', function(e){
+      var id = link.getAttribute('href');
+      var target = document.querySelector(id);
+      if(!target) return;
+      e.preventDefault();
+      var top = target.getBoundingClientRect().top + window.pageYOffset - navH + 1;
+      window.scrollTo({ top: top, behavior: 'smooth' });
+      history.pushState(null, '', id);
+    });
+  });
+
+  /* ---------- Scroll reveal ---------- */
+  var revealEls = document.querySelectorAll('.reveal');
+  if('IntersectionObserver' in window){
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting){
+          entry.target.classList.add('in');
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15, rootMargin: '0px 0px -60px 0px' });
+    revealEls.forEach(function(el){ io.observe(el); });
+  } else {
+    revealEls.forEach(function(el){ el.classList.add('in'); });
+  }
+
+  /* ---------- Scrollspy: nav links + trace rail nodes ---------- */
+  var sections = Array.prototype.slice.call(document.querySelectorAll('main section[id]'));
+  var navAnchors = document.querySelectorAll('.nav-links a, .mobile-menu a');
+  var traceNodes = document.querySelectorAll('.trace-node');
+
+  function setActive(id){
+    navAnchors.forEach(function(a){
+      a.classList.toggle('active', a.getAttribute('href') === '#' + id);
+    });
+    var order = sections.map(function(s){ return s.id; });
+    var activeIndex = order.indexOf(id);
+    traceNodes.forEach(function(n){
+      var nIndex = order.indexOf(n.dataset.node);
+      n.classList.toggle('active', n.dataset.node === id);
+      n.classList.toggle('passed', nIndex > -1 && nIndex < activeIndex);
+    });
+  }
+
+  /* ---------- Scroll progress (trace fill + mobile bar) ---------- */
+  var traceFill = document.getElementById('traceFill');
+  var scrollProgress = document.getElementById('scrollProgress');
+
+  function onScroll(){
+    var doc = document.documentElement;
+    var scrollTop = doc.scrollTop || document.body.scrollTop;
+    var scrollHeight = doc.scrollHeight - doc.clientHeight;
+    var pct = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
+    traceFill.style.height = pct + '%';
+    scrollProgress.style.width = pct + '%';
+
+    var current = sections[0].id;
+    var probe = navH + 90;
+    sections.forEach(function(sec){
+      var rect = sec.getBoundingClientRect();
+      if(rect.top <= probe) current = sec.id;
+    });
+    setActive(current);
+  }
+  document.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onScroll);
+  onScroll();
+
+  /* ---------- Hero terminal typing effect ---------- */
+  var lines = [
+    'initializing bridge: hardware ⇄ software',
+    'reading sensor... mapping to action',
+    'compiling embedded C++...',
+    'tracking hand landmarks...'
+  ];
+  var typedEl = document.getElementById('typedLine');
+  var li = 0, ci = 0, deleting = false;
+
+  function typeLoop(){
+    var full = lines[li];
+    if(!deleting){
+      ci++;
+      typedEl.textContent = full.slice(0, ci);
+      if(ci === full.length){
+        deleting = true;
+        setTimeout(typeLoop, 1600);
+        return;
+      }
+    } else {
+      ci--;
+      typedEl.textContent = full.slice(0, ci);
+      if(ci === 0){
+        deleting = false;
+        li = (li + 1) % lines.length;
+      }
+    }
+    setTimeout(typeLoop, deleting ? 28 : 42);
+  }
+  setTimeout(typeLoop, 900);
+
+})();
+</script>
+
+</body>
+</html>
