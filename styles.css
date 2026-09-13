@@ -33,6 +33,24 @@
     --maxw: 1120px;
   }
 
+  body.light-theme{
+    --bg:        #F3F7F5;
+    --bg-soft:   #E9F0ED;
+    --surface:   #FFFFFF;
+    --surface-2: #EEF6F2;
+    --border:    #C9D8D1;
+    --border-soft: #DDE8E2;
+    --text:      #14231C;
+    --text-dim:  #52645B;
+    --text-faint:#789087;
+    --signal:    #087A45;
+    --signal-dim: #51A87D;
+    --code:      #126AA3;
+    --code-dim:  #6B9FC2;
+    --warn:      #B85C1F;
+    --warn-dim:  #C88D69;
+  }
+
   *{ box-sizing:border-box; }
   html{ scroll-behavior:smooth; }
   @media (prefers-reduced-motion: reduce){
@@ -51,6 +69,7 @@
     line-height:1.6;
     -webkit-font-smoothing:antialiased;
     overflow-x:hidden;
+    transition:background 0.3s ease, color 0.3s ease;
   }
 
   h1,h2,h3,h4{ font-family:var(--font-display); margin:0; letter-spacing:-0.01em; color:var(--text); }
@@ -187,6 +206,12 @@
     backdrop-filter:blur(14px);
     -webkit-backdrop-filter:blur(14px);
     border-bottom:1px solid var(--border-soft);
+    transition:background 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+  }
+  .nav.scrolled{
+    background:var(--surface);
+    border-bottom-color:var(--border);
+    box-shadow:0 8px 24px rgba(0,0,0,0.12);
   }
   .nav-inner{
     width:100%;
@@ -243,6 +268,19 @@
     white-space:nowrap;
   }
   .nav-cta:hover{ background:var(--signal); color:#04120A; }
+
+  .theme-btn{
+    width:38px; height:38px;
+    border-radius:8px;
+    border:1px solid var(--border);
+    background:var(--surface);
+    color:var(--text);
+    display:flex; align-items:center; justify-content:center;
+    cursor:pointer;
+    flex-shrink:0;
+    transition:color 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+  }
+  .theme-btn:hover{ color:var(--signal); border-color:var(--signal-dim); }
 
   .menu-btn{
     display:none;
@@ -361,6 +399,11 @@
   /* reveal on scroll */
   .reveal{ opacity:0; transform:translateY(22px); transition:opacity 0.6s ease, transform 0.6s ease; }
   .reveal.in{ opacity:1; transform:translateY(0); }
+  .project.reveal{ transform:translateY(30px) scale(0.98); transition-delay:0s; }
+  .project.reveal.in{ transform:translateY(0) scale(1); }
+  .project-list .project:nth-child(2){ transition-delay:0.08s; }
+  .project-list .project:nth-child(3){ transition-delay:0.16s; }
+  .project-list .project:nth-child(4){ transition-delay:0.24s; }
 
   /* ============================================================
      5. ABOUT
